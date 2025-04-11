@@ -1,5 +1,13 @@
 const mongoose = require("mongoose");
 
+const productSchema = new mongoose.Schema({
+  productType: String,
+  productName: String,
+  imageUrl: String,
+  location: String,
+  price: Number,
+});
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -20,6 +28,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 8,
+  },
+  product: {
+    type: productSchema,
+    required: function () {
+      return this.role === "artisan";
+    },
   },
 });
 

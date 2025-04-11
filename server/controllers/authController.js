@@ -1,9 +1,20 @@
 const User = require("../models/User");
+const Product = require("../models/Product");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const signup = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const {
+    name,
+    email,
+    password,
+    role,
+    productType,
+    productName,
+    imageUrl,
+    location,
+    price,
+  } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -18,12 +29,30 @@ const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await User.create({
+    let userData = {
       name,
       email,
       password: hashedPassword,
       role,
-    });
+    };
+
+    if (role === "artisan") {
+      userData.product = { productType, productName, imageUrl, location, price };
+    }
+
+    const user = await User.create(userData);
+
+    // Save the product to products collection too
+    if (role === "artisan") {
+      await Product.create({
+        artisanId: user._id,
+        productType,
+        productName,
+        imageUrl,
+        location,
+        price,
+      });
+    }
 
     res.status(201).json({ message: "Signup successful. Please log in." });
   } catch (err) {
