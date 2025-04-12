@@ -15,7 +15,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/map" element={<MapPage />} />
-        <Route path="/product/:productType" element={<ProductShop />} />
+        <Route path="/product-shop/:productType" element={<ProductShop />} />
       </Routes>
     </Router>
   );
